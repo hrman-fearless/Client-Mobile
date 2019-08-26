@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TextInput, Image } from 'react-native';
 import Button from '../components/button';
 import Logo from '../assets/herman-logo.png';
 import { signIn } from '../store/action/index.js';
 import AsyncStorage from '@react-native-community/async-storage';
+import { getToken } from '../helpers/async-storage';
 import { connect } from 'react-redux'
 
 const SignInPage = (props) => {
@@ -13,19 +14,19 @@ const SignInPage = (props) => {
   const inputEmailHandler = (val) => setEmail(val)
   const inputPasswordHandler = (val) => setPassword(val)
 
+  useEffect(() => {
+    checkLogin()
+  }, [])
+
+  const checkLogin = async () => {
+    if (await getToken()) navigation.navigate('Dashboard')
+  }
   const dispatchSignIn = async () => {
-    console.log(email, password);
     await signIn({
       email,
       password
     })
-    console.log(AsyncStorage.getItem('token'));
-    navigation.navigate('Dashboard')
-  }
-
-
-  const goToHome = () => {
-    // navigation.navigate('home')
+    navigation.navigate('Other')
   }
 
   return (
@@ -57,7 +58,6 @@ const SignInPage = (props) => {
             />
         </View>
         <Button text='Sign In' functionPayload={dispatchSignIn}/>
-        {/* <Button text='Home' functionPayload={goToHome}/> */}
       </View>
     </SafeAreaView>
     </>

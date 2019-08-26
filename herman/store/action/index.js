@@ -20,10 +20,10 @@ export const signIn = (payload) => async dispatch => {
         password: payload.password
       }
     })
+    console.log(data, '@store');
     if (data.hasOwnProperty('token')) {
       // console.log(data, '@store');
       saveToken(data.token)
-      console.log(object);
     }
     // dispatch({
     //   type: 'SIGN_IN',

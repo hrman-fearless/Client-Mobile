@@ -19,6 +19,7 @@ export const getToken = async () => {
 export const destroyToken = async () => {
   try {
     await AsyncStorage.removeItem('token')
+    console.log(AsyncStorage.getItem('token'));
   } catch (error) {
     console.log(error.message);    
   }

@@ -3,6 +3,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default Button = ({ text, functionPayload }) => {
+  console.log(text);
   return (
     <View style={style.button}>
       <TouchableOpacity onPress={functionPayload}>
@@ -28,6 +29,6 @@ const style = StyleSheet.create({
     alignItems: 'center',
     fontSize: 16,
     fontWeight: '800',
-    color: '#fff'
+    color: '#fff',
   }
 })
