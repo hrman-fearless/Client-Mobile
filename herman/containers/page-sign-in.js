@@ -15,6 +15,7 @@ const SignInPage = (props) => {
   const inputPasswordHandler = (val) => setPassword(val)
 
   useEffect(() => {
+    // navigation.navigate('Dashboard')
     checkLogin()
   }, [])
 
@@ -26,7 +27,7 @@ const SignInPage = (props) => {
       email,
       password
     })
-    navigation.navigate('Other')
+    checkLogin()
   }
 
   return (
@@ -66,7 +67,7 @@ const SignInPage = (props) => {
 
 const style = StyleSheet.create({
   container: {
-    backgroundColor: '#f5fafe',
+    backgroundColor: '#EFF3F5',
   },
   home: {
     marginTop: 80,
@@ -75,18 +76,20 @@ const style = StyleSheet.create({
     justifyContent: 'center',
   },
   signInLogo: {
-    height: 300,
-    width: 300
+    height: 350,
+    width: 350
   },
   form: {
-    padding: 20
+    padding: 10
   },
   input: {
     height: 40,
     width: 300,
-    borderColor: 'grey',
+    borderColor: '#EFF3F5',
+    backgroundColor: '#EFF3F5',
+    color: '#0C344A',
     borderWidth: 1,
-    borderRadius: 25,
+    borderRadius: 5,
     paddingLeft: 15
   },
   h1: {
@@ -95,8 +98,10 @@ const style = StyleSheet.create({
     paddingBottom: 10,
     alignSelf: 'flex-start',
     marginLeft: '10%',
+    color: '#0C344A'
   },
   label: {
+    color: '#0C344A',
     fontWeight: '600',
     fontSize: 14,
     marginLeft: 10,
@@ -104,6 +109,7 @@ const style = StyleSheet.create({
     paddingBottom: 10
   },
   placeholder: {
+    color: '#0C344A',
     margin: 5,
     fontSize: 14
   }

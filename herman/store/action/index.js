@@ -11,6 +11,7 @@ export const signIn = (payload) => async dispatch => {
     type: 'LOADING',
     payload: true
   })
+  console.log(payload);
   try {
     const { data } = await axios({
       method: 'POST',
@@ -20,7 +21,7 @@ export const signIn = (payload) => async dispatch => {
         password: payload.password
       }
     })
-    console.log(data, '@store');
+    console.log(await data, '@store');
     if (data.hasOwnProperty('token')) {
       // console.log(data, '@store');
       saveToken(data.token)
