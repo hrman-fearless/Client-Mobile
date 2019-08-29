@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, Image, Dimensions } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
-export default miniCard = ({fullname, photos, title, email, phone, timeLogged}) => {
+export default miniCard = ({fullname, photos, title, email, phone, timeLogged, fetchAllUsers}) => {
   const width = Dimensions.get('screen').width
   const height = Dimensions.get('screen').height
   const style = StyleSheet.create({
@@ -131,7 +131,6 @@ export default miniCard = ({fullname, photos, title, email, phone, timeLogged}) 
   let lastTimeLogged = (timeLogged[timeLogged.length-1]) && timeLogged[timeLogged.length-1].arrival || new Date("2000/01/01");
   lastTimeLogged = new Date(lastTimeLogged).getUTCFullYear() + '/' + new Date(lastTimeLogged).getUTCMonth() + '/' + new Date(lastTimeLogged).getUTCDate();
 
-  console.log(today, 'vs', lastTimeLogged);
   return(
     <View style={style.card}>
       <View style={{flexDirection: 'column', alignContent: 'center', justifyContent: 'flex-end', alignItems: 'center'}}>

@@ -13,13 +13,12 @@ import {KeyboardAvoidingView} from 'react-native';
 const SignInPage = (props) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  // const [loading, setLoading] = useState(false)
-  const { signIn, navigation, isLoading, loadingStart } = props
+  const { signIn, navigation, isLoading, loadingStart, loggedUser } = props
   const inputEmailHandler = (val) => setEmail(val)
   const inputPasswordHandler = (val) => setPassword(val)
 
   useEffect(() => {
-    // destroyToken()
+    console.log('cek user', loggedUser);
     checkLogin()
   })
 
@@ -158,7 +157,8 @@ const style = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    isLoading : state.isLoading
+    isLoading : state.isLoading,
+    loggedUser : state.loggedUser
   }
 }
 

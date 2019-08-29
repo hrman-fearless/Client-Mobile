@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Herman",
-    "slug": "herman-expo",
+    "slug": "herman-expo-prod",
     "privacy": "public",
     "sdkVersion": "34.0.0",
     "platforms": [
@@ -11,7 +11,7 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/app-icon-herman.png",
     "splash": {
       "image": "./assets/herman-splash.png",
       "resizeMode": "contain",
@@ -25,6 +25,10 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "description": "",
+    "notification": {
+      "icon": "./assets/push-icon.png"
     }
   }
 }

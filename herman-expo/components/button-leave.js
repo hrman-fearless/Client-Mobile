@@ -8,7 +8,7 @@ export default ButtonLeave = ({ functionPayload, status }) => {
     return (
       <View style={style.button}>
         <TouchableOpacity onPress={functionPayload}>
-          <Feather name="log-out" size={20} color="#7fb4ff"/>
+          <Feather name="log-out" size={20} color="#0029ff"/>
         </TouchableOpacity>
       </View>
     )
@@ -27,7 +27,7 @@ const style = StyleSheet.create({
     height: 30,
     width: 30,
     paddingHorizontal: 2.5,
-    backgroundColor: '#0054cc',
+    // backgroundColor: '#0029ff',
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center'
@@ -40,6 +40,6 @@ const style = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    opacity: 0.2
+    opacity: 0.5
   },
 })

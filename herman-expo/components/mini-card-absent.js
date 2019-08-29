@@ -5,14 +5,13 @@ import LottieView from "lottie-react-native";
 import { Ionicons } from '@expo/vector-icons';
 
 export default absentCard = ({index, arrival, leave}) => {
+  console.log(index);
   const color = [
     `#7581F7`,
     `#F09994`,
     `#80C7D4`,
-    `#FDF4F3`,
+    `#006FAA`,
     `#9DC8D1`,
-    `#F5D898`,
-    `#F19855`
   ]
   const width = Dimensions.get('screen').width
   const height = Dimensions.get('screen').height

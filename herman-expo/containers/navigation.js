@@ -28,11 +28,11 @@ const TabNavigator = createBottomTabNavigator({
       } else if (routeName === 'Settings') {
         iconName = `setting`;
       }
-      return <IconComponent name={iconName} size={25} color={tintColor} />;
+      return <IconComponent name={iconName} size={18} color={tintColor} />;
     },
   }),
   tabBarOptions: {
-    activeTintColor: '#006AFF',
+    activeTintColor: '#0029ff',
     inactiveTintColor: 'gray',
   }
 })

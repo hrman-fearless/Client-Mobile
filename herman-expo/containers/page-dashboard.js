@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Dimensions, Image, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Dimensions, Image, ScrollView, ImageBackground, TouchableOpacity } from 'react-native';
 import { signIn, fetchDashboard, letsGoHome } from '../store/action/index.js';
 import { getToken } from '../helpers/async-storage';
 import { hourNow, getToday, getMonthNow } from '../helpers/textual-date';
@@ -7,11 +7,12 @@ import { connect } from 'react-redux';
 import CardAbsent from '../components/mini-card-absent';
 import LoadingScreen from './page-test';
 import ButtonLeave from '../components/button-leave';
-import { LinearGradient } from 'expo-linear-gradient';
+import Background from '../assets/bg.png'
 
 const DashboardPage = (props) => {
   const [today, setToday] = useState(new Date().getDay()-1)
-  const { userId, loggedUser, fetchDashboard, isLoading, navigation, letsGoHome } = props
+  const [refresh, setRefresh] = useState(false)
+  const { loggedUser, fetchDashboard, isLoading, navigation, letsGoHome } = props
   useEffect(()=> {
     fetch()
   }, [])
@@ -22,13 +23,11 @@ const DashboardPage = (props) => {
   }
 
   const goHome = async () => {
-    console.log('Kabur');
-    navigation.navigate('Leave')
     const id = await getToken('id')
+    navigation.navigate('Leave')
+    fetchDashboard(id)
     letsGoHome(id)
   }
-
-  
   
   if(loggedUser) {
     let todayComp = new Date();
@@ -39,6 +38,16 @@ const DashboardPage = (props) => {
     return (
       <SafeAreaView>
         <View style={style.wrapperHeader}>
+          <ImageBackground
+            style={{
+              width: width,
+              height: height*.4,
+              position: 'absolute',
+              alignSelf: 'center',
+              // opacity: 0.2,
+              marginTop: 10
+            }}
+            source={Background}/>     
           <View style={style.header}>
             <Image
               style={style.avatar}
@@ -67,13 +76,31 @@ const DashboardPage = (props) => {
             <View style={style.leave}>
               <Text style={style.leaveText}>Go Home</Text>
               {
-                (loggedUser.data.timeLogged[loggedUser.data.timeLogged.length-1] !== undefined && loggedUser.data.timeLogged.length-1 === today && loggedUser.data.timeLogged[loggedUser.data.timeLogged.length-1].leave === undefined) ? <ButtonLeave functionPayload={goHome} status={true}/> : <ButtonLeave functionPayload={goHome} status={false} />
+                (todayComp === lastTimeLogged && loggedUser.data.timeLogged[loggedUser.data.timeLogged.length-1].leave === undefined) ? <ButtonLeave functionPayload={goHome} status={true}/> : <ButtonLeave functionPayload={goHome} status={false} />
               }
             </View>
           </View>
           
           <View style={style.absent}>
-            <Text style={style.h1}>Weekly Log</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'nowrap'}}>
+              <Text style={style.h1}>Weekly Log</Text>
+              <TouchableOpacity onPress={fetch}>
+                <View style={{
+                  backgroundColor: '#0029ff',
+                  borderRadius: 20,
+                  width: width*.225,
+                  height: 25,
+                  alignSelf: "center",
+                  marginTop: height*.03,
+                  marginBottom: height*.03,
+                  marginRight: '10%',
+                  alignContent: 'center',
+                  justifyContent: 'center',           
+                }}>
+                  <Text style={style.refresh}>Refresh</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
             <ScrollView style={style.scroll} showsVerticalScrollIndicator={false}>
               {
                 loggedUser.data.timeLogged.map((val, idx) => <CardAbsent key={idx} {...val} index={idx} />)
@@ -107,7 +134,7 @@ const style = StyleSheet.create({
   },
   wrapperHeader: {
     paddingTop: height*.05,
-    backgroundColor: '#fff'
+    backgroundColor: '#0029ff'
   },
   header: {
     display: 'flex',
@@ -116,7 +143,7 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingTop: height*.025,
-    paddingHorizontal: '5%'
+    paddingHorizontal: '5%',
   },
   headerPhoto: {
     width: 300,
@@ -146,7 +173,7 @@ const style = StyleSheet.create({
     paddingBottom: 5,
     alignSelf: 'flex-start',
     marginLeft: '5%',
-    color: '#0C344A',
+    color: '#fff',
   },
   headerHalo: {
     fontWeight: '800',
@@ -154,7 +181,7 @@ const style = StyleSheet.create({
     paddingBottom: 5,
     alignSelf: 'flex-start',
     marginLeft: '5%',
-    color: '#547080',
+    color: '#fff',
     opacity: 0.4
 
   },
@@ -164,7 +191,7 @@ const style = StyleSheet.create({
     paddingBottom: 5,
     alignSelf: 'flex-start',
     marginLeft: '5%',
-    color: '#0C344A'
+    color: '#fff'
   },
   timeStamp: {
     flexDirection: 'row',
@@ -172,7 +199,7 @@ const style = StyleSheet.create({
     justifyContent: 'space-evenly',
     marginTop: '-10.5%',
     alignSelf: 'center',
-    backgroundColor: '#006AFF',
+    backgroundColor: '#FFF',
     height: height*.14,
     width: '85%',
     borderRadius: 10,
@@ -181,7 +208,7 @@ const style = StyleSheet.create({
       width: 0, 
       height: 3
     },
-    shadowOpacity: 0.40,
+    shadowOpacity: 0.20,
     shadowRadius: 2.5,
     elevation: 3,
     // opacity: 0.2
@@ -212,7 +239,7 @@ const style = StyleSheet.create({
     padding: 2.5,
     textAlign: 'center',
     marginTop: 12.5,
-    color: '#F5FAFE'
+    color: '#0C344A'
   },
   leaveText: {
     fontWeight: '600',
@@ -220,7 +247,7 @@ const style = StyleSheet.create({
     padding: 2.5,
     textAlign: 'center',
     marginTop: 12.5,
-    color: '#F5FAFE'
+    color: '#0C344A'
   },
   time: {
     fontWeight: '800',
@@ -228,16 +255,17 @@ const style = StyleSheet.create({
     padding: .5,
     textAlign: 'center',
     marginTop: 10,
-    color: '#fff'
+    color: '#0C344A'
   },
   timeNow: {
     fontWeight: '800',
     fontSize: 14,
     padding: .5,
     textAlign: 'center',
-    color: '#547080',
+    color: '#fff',
     marginTop: -height*.075,
-    marginBottom: height*.075
+    marginBottom: height*.075,
+    opacity: 0.8
   },
   h1: {
     fontWeight:  '800',
@@ -248,11 +276,21 @@ const style = StyleSheet.create({
     marginLeft: '5%',
     color: '#0C344A'
   },
+  refresh: {
+    fontWeight: '600',
+    fontSize: 14,
+    alignSelf: 'flex-start',
+    color: '#fff',
+    alignSelf: 'center'
+  },
   absent: {
     width: width,
     marginTop: -height*.05,
     paddingTop: height*.05, 
     zIndex: -99,
+    backgroundColor: '#F5FAFE',
+    borderRadius: 10,
+    height: height*.48,
   },
   scroll: {
     height: height*.275,
@@ -274,7 +312,3 @@ const mapDispatchToProps = {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardPage)
-
-          {/* <LinearGradient
-            colors={['rgba(0, 106, 255, 1)', 'transparent']}
-            style={style.gradient}/> */}

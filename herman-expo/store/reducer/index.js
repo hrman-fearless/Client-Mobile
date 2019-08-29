@@ -36,6 +36,16 @@ export default (state = initState, action) => {
         ...state,
         allUsers: action.payload
       }
+    case 'SIGN_OUT':
+      return state = {
+        isLoading: false,
+        hasError: false,
+        token: null,
+        loggedUser: null,
+        userId: null,
+        errorMessage: null,
+        allUsers: null
+      }
     default:
       break;
   }

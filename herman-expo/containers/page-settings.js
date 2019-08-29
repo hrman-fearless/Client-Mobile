@@ -1,24 +1,21 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, Image } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Dimensions, Image } from 'react-native';
 import { AsyncStorage } from 'react-native';
 import Button from '../components/button';
-import ButtonLoading from '../components/button-loading';
-import { signIn } from '../store/action/index.js';
-import { connect } from 'react-redux'
+import { signIn, signOut } from '../store/action/index.js';
+import { connect } from 'react-redux';
+import Logo from '../assets/herman-splash.png';
 
 const SettingPage = (props) => {
-  // const [email, setEmail] = useState('')
-  // const [password, setPassword] = useState('')
-  const { navigation } = props
+  const { navigation, signOut } = props
 
-  const signOut = async () => {
-    console.log('Sign Out');
+  const signOutFromApp = async () => {
     try {
       await AsyncStorage.removeItem('token')
-      console.log(await AsyncStorage.getItem('token'));
     } catch (error) {
       console.log(error.message);    
     }
+    signOut()
     navigation.navigate('Landing')
   }
 
@@ -26,27 +23,34 @@ const SettingPage = (props) => {
     <>
     <SafeAreaView>
       <View style={style.home}>
-        <Button text='Sign Out' functionPayload={signOut}/>
-        <ButtonLoading/>
-      </View>
+        <Image
+          style={style.signInLogo}
+          source={Logo}/>
+        <Text style={style.h1}>Proudly Made by :</Text>
+        <Text style={style.text}>Irshadi Bagasputro</Text>
+        <Text style={style.text}>IG Rinda Yuda Wardana</Text>
+        <Text style={style.text}>Hendrix Jhon Rickson Silaen.</Text>
+        <Button text='Sign Out' functionPayload={signOutFromApp}/>
+        </View>
     </SafeAreaView>
     </>
   )
 }
 
+const height = Dimensions.get('screen').height
 const style = StyleSheet.create({
   container: {
     backgroundColor: '#f5fafe',
   },
   home: {
-    marginTop: 80,
     height: 'auto',
     alignItems: 'center',
     justifyContent: 'center',
   },
   signInLogo: {
     height: 300,
-    width: 300
+    width: 300,
+    alignSelf: 'center'
   },
   form: {
     padding: 20
@@ -76,11 +80,29 @@ const style = StyleSheet.create({
   placeholder: {
     margin: 5,
     fontSize: 14
+  },
+  h1: {
+    fontWeight:  '800',
+    fontSize: 16,
+    alignSelf: 'center',
+    color: '#0C344A',
+    paddingBottom: 15
+  },
+  text: {
+    alignSelf: 'center',
+    textAlign: 'center',
+    fontWeight: '600',
+    fontSize: 12,
+    width: '75%',
+    paddingHorizontal: 10,
+    flexWrap: 'wrap',
+    color: '#547080'
   }
 })
 
 const mapDispatchToProps = {
-  signIn
+  signIn,
+  signOut
 }
 
 export default connect(null, mapDispatchToProps)(SettingPage)

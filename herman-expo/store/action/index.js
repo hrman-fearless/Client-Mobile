@@ -1,11 +1,12 @@
 import axios from 'axios';
-import { saveToken, getToken } from '../../helpers/async-storage';
+import { saveToken, getToken, destroyToken } from '../../helpers/async-storage';
 import { 
   SIGN_IN,
   LOADING,
   HAS_ERROR,
   FETCH_DASHBOARD,
-  FETCH_USERS
+  FETCH_USERS,
+  SIGN_OUT,
 } from './action-type';
 
 export const loadingStart = () => dispatch => {
@@ -77,7 +78,6 @@ export const letsGoHome = (id) => async dispatch => {
 }
 
 export const fetchUsers = () => async dispatch => {
-  console.log('FETCH');
   dispatch({
     type: 'LOADING',
     payload: true
@@ -100,4 +100,20 @@ export const fetchUsers = () => async dispatch => {
       payload: false
     })
   }
+}
+
+export const signOut = () => async dispatch => {
+  console.log('Signing Out');
+  dispatch({
+    type: 'LOADING',
+    payload: true
+  })
+  dispatch({
+    type: SIGN_OUT,
+    payload: {}
+  })
+  dispatch({
+    type: 'LOADING',
+    payload: false
+  })
 }

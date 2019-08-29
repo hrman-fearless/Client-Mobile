@@ -20,7 +20,7 @@ const style = StyleSheet.create({
   button: {
     marginTop: 20,
     padding: 10,
-    backgroundColor: '#006AFF',
+    backgroundColor: '#0029ff',
     height: 40,
     width: '40%',
     flexDirection: 'row',
