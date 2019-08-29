@@ -4,7 +4,8 @@ const initState = {
   token: null,
   loggedUser: null,
   userId: null,
-  errorMessage: null
+  errorMessage: null,
+  allUsers: null
 }
 
 export default (state = initState, action) => {
@@ -29,6 +30,11 @@ export default (state = initState, action) => {
       return state = {
         ...state,
         loggedUser: action.payload
+      }
+    case 'FETCH_USERS':
+      return state = {
+        ...state,
+        allUsers: action.payload
       }
     default:
       break;

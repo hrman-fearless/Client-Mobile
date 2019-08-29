@@ -3,7 +3,6 @@ import { StyleSheet, View, Text } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default Button = ({ text, functionPayload }) => {
-  console.log(text);
   return (
     <View style={style.button}>
       <TouchableOpacity onPress={functionPayload}>

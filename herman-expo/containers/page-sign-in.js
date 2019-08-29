@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import LottieView from 'lottie-react-native';
-
+import {KeyboardAvoidingView} from 'react-native';
 
 const SignInPage = (props) => {
   const [email, setEmail] = useState('')
@@ -50,44 +50,46 @@ const SignInPage = (props) => {
 
   return (
     <>
-    <SafeAreaView>
-      <View style={style.home}>
-        <View
-          style={style.bgHerman}>
-          <LottieView
-              style={style.signInLogo}
-              source={require('../assets/animation-w191-h173.json')}
-              autoPlay
-              loop
-            />
+      <SafeAreaView>
+        <View style={style.home}>
+        <KeyboardAvoidingView behavior="position" enabled>
+          <View
+            style={style.bgHerman}>
+            <LottieView
+                style={style.signInLogo}
+                source={require('../assets/animation-w191-h173.json')}
+                autoPlay
+                loop
+              />
+          </View>
+          <Text style={style.h1}>Sign In</Text>
+          <View style={style.form}>
+            <Text style={style.label}>Email</Text>
+            <TextInput
+                style={style.input}
+                onChangeText={text => inputEmailHandler(text)}
+                value={email}
+                autoCorrect={false}
+                keyboardType='email-address'
+                autoCompleteType='email'
+                autoCapitalize='none'
+                returnKeyType='done'
+              />
+            <Text style={style.label}>Password</Text>
+            <TextInput
+                style={style.input}
+                onChangeText={text => inputPasswordHandler(text)}
+                value={password}
+                secureTextEntry={true}
+                autoCorrect={false}
+                returnKeyType='done'
+              />
+          </View>
+          { isLoading && <ButtonLoading/> }
+          { !isLoading && <Button text='Sign In' functionPayload={dispatchSignIn}/>}
+        </KeyboardAvoidingView>
         </View>
-        <Text style={style.h1}>Sign In</Text>
-        <View style={style.form}>
-          <Text style={style.label}>Email</Text>
-          <TextInput
-              style={style.input}
-              onChangeText={text => inputEmailHandler(text)}
-              value={email}
-              autoCorrect={false}
-              keyboardType='email-address'
-              autoCompleteType='email'
-              autoCapitalize='none'
-              returnKeyType='done'
-            />
-          <Text style={style.label}>Password</Text>
-          <TextInput
-              style={style.input}
-              onChangeText={text => inputPasswordHandler(text)}
-              value={password}
-              secureTextEntry={true}
-              autoCorrect={false}
-              returnKeyType='done'
-            />
-        </View>
-        { isLoading && <ButtonLoading/> }
-        { !isLoading && <Button text='Sign In' functionPayload={dispatchSignIn}/>}
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
     </>
   )
 }
@@ -98,6 +100,8 @@ const style = StyleSheet.create({
     backgroundColor: '#EFF3F5',
   },
   bgHerman: {
+    justifyContent: 'center',
+    alignSelf: 'center',
     width: width*.625,
     height: height*.35,
     borderRadius: 100,
@@ -134,7 +138,7 @@ const style = StyleSheet.create({
     paddingTop: height*0.025,
     paddingBottom: height*0.01,
     alignSelf: 'flex-start',
-    marginLeft: '10%',
+    marginLeft: '5%',
     color: '#0C344A'
   },
   label: {

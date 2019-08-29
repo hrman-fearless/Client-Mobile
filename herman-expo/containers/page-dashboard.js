@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, Dimensions, Image, ScrollView } from 'react-native';
-import { signIn, fetchDashboard } from '../store/action/index.js';
+import { signIn, fetchDashboard, letsGoHome } from '../store/action/index.js';
 import { getToken } from '../helpers/async-storage';
-import { hourNow } from '../helpers/textual-date';
+import { hourNow, getToday, getMonthNow } from '../helpers/textual-date';
 import { connect } from 'react-redux';
 import CardAbsent from '../components/mini-card-absent';
 import LoadingScreen from './page-test';
 import ButtonLeave from '../components/button-leave';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const DashboardPage = (props) => {
-  const [today, setToday] = useState(new Date())
-  const { userId, loggedUser, fetchDashboard, isLoading, navigation } = props
+  const [today, setToday] = useState(new Date().getDay()-1)
+  const { userId, loggedUser, fetchDashboard, isLoading, navigation, letsGoHome } = props
   useEffect(()=> {
     fetch()
   }, [])
@@ -21,50 +22,71 @@ const DashboardPage = (props) => {
   }
 
   const goHome = async () => {
-    console.log('Ayo Kabur');
-    navigation.navigate('Ciao')
+    console.log('Kabur');
+    navigation.navigate('Leave')
+    const id = await getToken('id')
+    letsGoHome(id)
   }
 
+  
+  
   if(loggedUser) {
+    let todayComp = new Date();
+    todayComp = todayComp.getUTCFullYear() + '/' + todayComp.getUTCMonth() + '/' + todayComp.getUTCDate();
+    let lastTimeLogged = (loggedUser.data.timeLogged[loggedUser.data.timeLogged.length-1]) && loggedUser.data.timeLogged[loggedUser.data.timeLogged.length-1].arrival || new Date("2000/01/01");
+    lastTimeLogged = new Date(lastTimeLogged).getUTCFullYear() + '/' + new Date(lastTimeLogged).getUTCMonth() + '/' + new Date(lastTimeLogged).getUTCDate();
+    console.log(todayComp, lastTimeLogged);
     return (
       <SafeAreaView>
-        <View style={style.header}>
-          <Image
-            style={style.avatar}
-            source={{uri: `https://${loggedUser.data.photos.Bucket}.s3-ap-southeast-1.amazonaws.com/${loggedUser.data.photos.Name}`}}
-            />
-          <View style={style.headerText}>
-            <Text style={style.headerHalo}>Hello,</Text>
-            <Text style={style.headerName}>{loggedUser.data.fullname}</Text>
-            <Text style={style.headerTitle}>{loggedUser.data.title}</Text>
+        <View style={style.wrapperHeader}>
+          <View style={style.header}>
+            <Image
+              style={style.avatar}
+              source={{uri: `https://${loggedUser.data.photos.Bucket}.s3.amazonaws.com/${loggedUser.data.photos.Name}`}}
+              />
+            <View style={{alignSelf: "flex-start", width: Dimensions.get('screen').width*.75, marginLeft: 10}}>
+              <Text style={style.headerHalo}>Hello,</Text>
+              <Text style={style.headerName}>{loggedUser.data.fullname}</Text>
+              <Text style={style.headerTitle}>{loggedUser.data.title}</Text>
+            </View>
           </View>
+          <Text style={style.timeNow}>{getToday(new Date().getDay())}, {new Date().getDate()} {getMonthNow(new Date().getMonth())} {new Date().getFullYear()}</Text>
+          <View style={style.timeStamp}>
+            <View style={style.arrival}>
+              <Text style={style.arrivalText}>Arrival</Text>
+              {
+                (todayComp === lastTimeLogged) ? <Text style={style.time}>{hourNow(loggedUser.data.timeLogged[loggedUser.data.timeLogged.length-1].arrival)}</Text> : <Text style={style.time}>-</Text>
+              }
+            </View>
+            <View style={style.leave}>
+              <Text style={style.leaveText}>Leave</Text>
+              {
+                (todayComp === lastTimeLogged) ? <Text style={style.time}>{hourNow(loggedUser.data.timeLogged[loggedUser.data.timeLogged.length-1].leave)}</Text> : <Text style={style.time}>-</Text>
+              }
+            </View>
+            <View style={style.leave}>
+              <Text style={style.leaveText}>Go Home</Text>
+              {
+                (loggedUser.data.timeLogged[loggedUser.data.timeLogged.length-1] !== undefined && loggedUser.data.timeLogged.length-1 === today && loggedUser.data.timeLogged[loggedUser.data.timeLogged.length-1].leave === undefined) ? <ButtonLeave functionPayload={goHome} status={true}/> : <ButtonLeave functionPayload={goHome} status={false} />
+              }
+            </View>
+          </View>
+          
+          <View style={style.absent}>
+            <Text style={style.h1}>Weekly Log</Text>
+            <ScrollView style={style.scroll} showsVerticalScrollIndicator={false}>
+              {
+                loggedUser.data.timeLogged.map((val, idx) => <CardAbsent key={idx} {...val} index={idx} />)
+              }
+            </ScrollView>
+          </View>
+          
         </View>
-        <View style={style.timeStamp}>
-          <View style={style.arrival}>
-            <Text style={style.arrivalText}>Arrival</Text>
-            <Text style={style.time}>{hourNow(loggedUser.data.timeLogged[loggedUser.data.timeLogged.length-1].arrival)}</Text>
-          </View>
-          <View style={style.leave}>
-            <Text style={style.leaveText}>Leave</Text>
-            <Text style={style.time}>{hourNow(loggedUser.data.timeLogged[loggedUser.data.timeLogged.length-1].leave)}</Text>
-          </View>
-          <View style={style.leave}>
-            <Text style={style.leaveText}>Go Home</Text>
-            <ButtonLeave functionPayload={goHome} />
-          </View>
-        </View>
-        <Text style={style.h1}>Weekly Log</Text>
-        <ScrollView style={style.home} showsVerticalScrollIndicator={false}>
-          {
-            loggedUser.data.timeLogged.map((val, idx) => <CardAbsent key={idx} {...val} index={idx} />)
-          }
-        </ScrollView>
       </SafeAreaView>
     )  
   } else {
     return <LoadingScreen/>
   }
-
 }
 
 const width = Dimensions.get('screen').width
@@ -79,28 +101,41 @@ const style = StyleSheet.create({
     alignSelf: 'flex-end',
     marginTop: 20,
     paddingBottom: 20,
-    width,
+    paddingLeft: 3.5,
+    paddingRight: 3.5,
     height: width*.8,
+  },
+  wrapperHeader: {
+    paddingTop: height*.05,
+    backgroundColor: '#fff'
   },
   header: {
     display: 'flex',
     width: Dimensions.get('screen').width,
-    height: '30%',
-    backgroundColor: '#f5fafe',
+    height: height*.3,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 25
+    paddingTop: height*.025,
+    paddingHorizontal: '5%'
   },
   headerPhoto: {
     width: 300,
     height: 300,
-    padding: 25
+    padding: 25,
+  },
+  gradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: height*.3
   },
   avatar: {
     width: 50,
     height: 50,
     borderRadius: 10,
-    marginTop: '8.25%'
+    marginLeft: '3.5%',
+    marginTop: '5%'
   },
   form: {
     padding: 20
@@ -110,24 +145,25 @@ const style = StyleSheet.create({
     fontSize: 20,
     paddingBottom: 5,
     alignSelf: 'flex-start',
-    marginLeft: '10%',
+    marginLeft: '5%',
     color: '#0C344A',
-    width: width*.75
   },
   headerHalo: {
     fontWeight: '800',
-    fontSize: 20,
+    fontSize: 24,
     paddingBottom: 5,
     alignSelf: 'flex-start',
-    marginLeft: '10%',
-    color: '#b6c2c8'
+    marginLeft: '5%',
+    color: '#547080',
+    opacity: 0.4
+
   },
   headerTitle: {
-    fontWeight: '600',
+    fontWeight: '800',
     fontSize: 14,
     paddingBottom: 5,
     alignSelf: 'flex-start',
-    marginLeft: '10%',
+    marginLeft: '5%',
     color: '#0C344A'
   },
   timeStamp: {
@@ -136,7 +172,7 @@ const style = StyleSheet.create({
     justifyContent: 'space-evenly',
     marginTop: '-10.5%',
     alignSelf: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#006AFF',
     height: height*.14,
     width: '85%',
     borderRadius: 10,
@@ -145,9 +181,10 @@ const style = StyleSheet.create({
       width: 0, 
       height: 3
     },
-    shadowOpacity: 0.10,
-    shadowRadius: 2.22,
+    shadowOpacity: 0.40,
+    shadowRadius: 2.5,
     elevation: 3,
+    // opacity: 0.2
   },
   today: {
     width: 300,
@@ -157,7 +194,7 @@ const style = StyleSheet.create({
     textAlign: 'center',
     flexDirection: 'column',
     marginTop: 10,
-    color: '#0C344A'
+    color: '#FFF'
   },
   arrival: {
     width: 90,
@@ -175,7 +212,7 @@ const style = StyleSheet.create({
     padding: 2.5,
     textAlign: 'center',
     marginTop: 12.5,
-    color: '#0C344A'
+    color: '#F5FAFE'
   },
   leaveText: {
     fontWeight: '600',
@@ -183,7 +220,7 @@ const style = StyleSheet.create({
     padding: 2.5,
     textAlign: 'center',
     marginTop: 12.5,
-    color: '#0C344A'
+    color: '#F5FAFE'
   },
   time: {
     fontWeight: '800',
@@ -191,17 +228,35 @@ const style = StyleSheet.create({
     padding: .5,
     textAlign: 'center',
     marginTop: 10,
-    color: '#0C344A'
+    color: '#fff'
+  },
+  timeNow: {
+    fontWeight: '800',
+    fontSize: 14,
+    padding: .5,
+    textAlign: 'center',
+    color: '#547080',
+    marginTop: -height*.075,
+    marginBottom: height*.075
   },
   h1: {
     fontWeight:  '800',
     fontSize: 20,
-    paddingTop: height*0.05,
-    paddingBottom: height*0.01,
+    paddingTop: height*.03,
+    paddingBottom: height*.03,
     alignSelf: 'flex-start',
     marginLeft: '5%',
     color: '#0C344A'
   },
+  absent: {
+    width: width,
+    marginTop: -height*.05,
+    paddingTop: height*.05, 
+    zIndex: -99,
+  },
+  scroll: {
+    height: height*.275,
+  }
 })
 
 const mapStateToProps = (state) => {
@@ -214,7 +269,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   signIn,
-  fetchDashboard
+  fetchDashboard,
+  letsGoHome
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardPage)
+
+          {/* <LinearGradient
+            colors={['rgba(0, 106, 255, 1)', 'transparent']}
+            style={style.gradient}/> */}

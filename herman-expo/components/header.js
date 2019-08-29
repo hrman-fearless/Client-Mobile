@@ -8,7 +8,7 @@ export default SignIn = () => {
         style={style.headerMain}>
         <Image
           style={style.headerImage}
-          source={require('../assets/astro-mov.png')}
+          source={require('../assets/herman-logo.png')}
         />
       </View>
     </SafeAreaView>

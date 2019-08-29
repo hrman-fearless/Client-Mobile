@@ -4,32 +4,31 @@ import SignIn from './page-sign-in';
 import Dashboard from './page-dashboard';
 import Settings from './page-settings';
 import Employee from './page-users';
-import Leave from ''
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Leave from './page-leave';
+import { AntDesign } from '@expo/vector-icons';
 
 const TabNavigator = createBottomTabNavigator({
   Dashboard: Dashboard,
   Employee: Employee,
   Settings: Settings,
+  // Leave: Leave
 },
 {
   defaultNavigationOptions: ({ navigation }) => ({
     headerStyle: null,
     tabBarIcon: ({ focused, horizontal, tintColor }) => {
       const { routeName } = navigation.state;
-      // let IconComponent = Ionicons;
-      // let iconName;
+      let IconComponent = AntDesign;
+      let iconName;
 
-      if (routeName === 'Home') {
-        iconName = `ios-home`;
-        // Sometimes we want to add badges to some icons. 
-        // You can check the implementation below.
-      } else if (routeName === 'Movies') {
-        iconName = `ios-videocam`;
-      } else if (routeName === 'Actor') {
-        iconName = `ios-people`;
+      if (routeName === 'Dashboard') {
+        iconName = `home`;
+      } else if (routeName === 'Employee') {
+        iconName = `user`;
+      } else if (routeName === 'Settings') {
+        iconName = `setting`;
       }
-      // return <IconComponent name={iconName} size={25} color={tintColor} />;
+      return <IconComponent name={iconName} size={25} color={tintColor} />;
     },
   }),
   tabBarOptions: {
@@ -47,5 +46,6 @@ const Landing = {
 
 export default createAppContainer(createSwitchNavigator({
   Landing: Landing,
-  Other: TabNavigator
+  Other: TabNavigator,
+  Leave: Leave
 }));

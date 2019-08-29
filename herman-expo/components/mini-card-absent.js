@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, Dimensions, Image } from 'react-native';
 import { getToday, getMonthNow, hourNow } from '../helpers/textual-date';
+import LottieView from "lottie-react-native";
+import { Ionicons } from '@expo/vector-icons';
 
 export default absentCard = ({index, arrival, leave}) => {
   const color = [
-    [`#CFECF6`, `#fff`],
-    [`#EB804F`, `#d4e1d4`],
-    [`#FAF3FE`, `#e1dae4`],
-    [`#FDF4F3`],
-    [`#9DC8D1`],
-    [`#F5D898`],
-    [`#F19855`]
+    `#7581F7`,
+    `#F09994`,
+    `#80C7D4`,
+    `#FDF4F3`,
+    `#9DC8D1`,
+    `#F5D898`,
+    `#F19855`
   ]
   const width = Dimensions.get('screen').width
   const height = Dimensions.get('screen').height
@@ -21,7 +23,7 @@ export default absentCard = ({index, arrival, leave}) => {
       justifyContent: 'space-between',
       alignSelf: 'center',
       paddingLeft: 20,
-      backgroundColor: color[index][0],
+      backgroundColor: color[index],
       paddingRight: 20,
       marginBottom: height*.025,
       height: height*.14,
@@ -37,12 +39,12 @@ export default absentCard = ({index, arrival, leave}) => {
       elevation: 3,
     },
     bgText: {
-      color: color[index][1],
+      color: `#FFF`,
       fontWeight: '800',
       fontSize: 26,
       textAlign: 'center',
       alignSelf: 'flex-end',
-      // marginTop: 12.5,
+      paddingBottom: 12.5,
     },
     log: {
       flexDirection: 'column',
@@ -57,15 +59,38 @@ export default absentCard = ({index, arrival, leave}) => {
       textAlign: 'center',
       color: '#E8EDFD',
       alignSelf: 'center',
-      marginBottom: 1
+      marginBottom: 1,
+      marginLeft: 10
+    },
+    inline: {
+      flexDirection: "row",
+      justifyContent: "flex-start",
+      alignItems: 'center'
     }
   })
 
   return (
     <View style={style.card}>
+      <LottieView
+        style={{
+          width: width*.9,
+          height: height*.184,
+          opacity: 0.5,
+          position: "absolute",
+        }}
+        source={require('../assets/wave1.json')}
+        autoPlay
+        loop
+      />
       <View style={style.log}>
-        { arrival && <Text style={style.logText}>{hourNow(new Date(arrival)) }</Text> }
-        { leave && <Text style={style.logText}>{hourNow(new Date(leave))}</Text> }
+        { arrival && (<View style={style.inline}>
+            <Ionicons name="ios-log-in" size={14} color="#fff"/>
+            <Text style={style.logText}>{hourNow(new Date(arrival)) }</Text>
+          </View>) }
+        { leave && (<View style={style.inline}>
+            <Ionicons name="ios-log-out" size={14} color="#fff"/>
+            <Text style={style.logText}>{hourNow(new Date(leave)) }</Text>
+          </View>) }
       </View>
       <Text style={style.bgText}>{getToday(new Date(arrival).getDay())}</Text>
     </View>
